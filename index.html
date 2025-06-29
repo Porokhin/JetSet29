@@ -43,9 +43,12 @@
         tg.expand(); // Растягиваем на весь экран
         
         // Показываем страницу в iframe
-        function showPage(url) {
-            document.getElementById('webview').src = url;
-        }
+      // Замените showPage() на это:
+function showPage(url) {
+    const iframe = document.getElementById('webview');
+    iframe.src = `https://cors-anywhere.herokuapp.com/${url}`;
+    // Или другой прокси: https://api.allorigins.win/raw?url=${encodeURIComponent(url)}
+}
         
         // Пытаемся обойти блокировку iframe
         document.getElementById('webview').onload = function() {
