@@ -1,29 +1,64 @@
+<!DOCTYPE html>
 <html>
 <head>
     <title>Jetset29 – Telegram Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { margin: 0; padding: 20px; text-align: center; }
-        button { 
-            background: #0088cc; 
-            color: white; 
-            border: none; 
-            padding: 12px 20px; 
-            border-radius: 8px; 
-            font-size: 16px; 
-            margin: 10px;
+        body { 
+            margin: 0; 
+            padding: 0; 
+            font-family: Arial, sans-serif;
+        }
+        #webview {
+            width: 100%;
+            height: 100vh;
+            border: none;
+        }
+        .navbar {
+            padding: 10px;
+            background: #0088cc;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+        }
+        .navbar button {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 16px;
         }
     </style>
 </head>
 <body>
-    <h2>Jetset29</h2>
-    <p>Нажмите кнопку, чтобы открыть сайт:</p>
+    <div class="navbar">
+        <button onclick="showPage('https://jetset29.ru')">Магазин</button>
+        <button onclick="showPage('https://jetset29.ru/cart')">Корзина</button>
+    </div>
     
-    <button onclick="window.open('https://jetset29.ru', '_blank')">Открыть магазин</button>
-    <button onclick="window.open('https://jetset29.ru/cart', '_blank')">Корзина</button>
+    <!-- Здесь будет отображаться сайт -->
+    <iframe id="webview" src="https://jetset29.ru"></iframe>
 
     <script>
-        Telegram.WebApp.expand();
+        const tg = Telegram.WebApp;
+        tg.expand(); // Растягиваем на весь экран
+        
+        // Показываем страницу в iframe
+        function showPage(url) {
+            document.getElementById('webview').src = url;
+        }
+        
+        // Пытаемся обойти блокировку iframe
+        document.getElementById('webview').onload = function() {
+            try {
+                // Если сайт блокирует загрузку, используем прокси
+                if (this.contentWindow.length === 0) {
+                    this.src = `https://api.allorigins.win/raw?url=${encodeURIComponent(this.src)}`;
+                }
+            } catch (e) {
+                console.error("Ошибка загрузки:", e);
+                tg.showAlert("Не удалось загрузить страницу. Попробуйте позже.");
+            }
+        };
     </script>
 </body>
 </html>
