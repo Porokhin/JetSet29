@@ -1,53 +1,29 @@
-<!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jetset29 – Магазин в Telegram</title>
+    <title>Jetset29 – Telegram Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { margin: 0; padding: 0; }
-        #site-iframe {
-            width: 100%;
-            height: 100vh;
-            border: none;
-        }
-        .cart-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #0088cc;
-            color: white;
-            border: none;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            font-size: 24px;
-            z-index: 9999;
+        body { margin: 0; padding: 20px; text-align: center; }
+        button { 
+            background: #0088cc; 
+            color: white; 
+            border: none; 
+            padding: 12px 20px; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            margin: 10px;
         }
     </style>
 </head>
 <body>
-    <!-- Основной сайт внутри iframe -->
-    <iframe id="site-iframe" src="https://jetset29.ru/" allow="fullscreen"></iframe>
-
-    <!-- Кнопка корзины -->
-    <button class="cart-btn" onclick="openCart()">🛒</button>
+    <h2>Jetset29</h2>
+    <p>Нажмите кнопку, чтобы открыть сайт:</p>
+    
+    <button onclick="window.open('https://jetset29.ru', '_blank')">Открыть магазин</button>
+    <button onclick="window.open('https://jetset29.ru/cart', '_blank')">Корзина</button>
 
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand(); // На весь экран
-
-        // Открывает корзину
-        function openCart() {
-            document.getElementById('site-iframe').src = "https://jetset29.ru/cart/";
-        }
-
-        // Кнопка "Назад" (если нужно)
-        tg.BackButton.show();
-        tg.BackButton.onClick(() => {
-            document.getElementById('site-iframe').src = "https://jetset29.ru/";
-        });
+        Telegram.WebApp.expand();
     </script>
 </body>
 </html>
