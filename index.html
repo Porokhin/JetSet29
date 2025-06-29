@@ -1,64 +1,43 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Jetset29 – Telegram Mini App</title>
+    <title>Jetset29</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { 
-            margin: 0; 
-            padding: 0; 
-            font-family: Arial, sans-serif;
+        body {
+            margin: 0;
+            padding: 0;
         }
-        #webview {
+        iframe {
             width: 100%;
             height: 100vh;
             border: none;
         }
-        .navbar {
-            padding: 10px;
-            background: #0088cc;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-        }
-        .navbar button {
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 16px;
-        }
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <button onclick="showPage('https://jetset29.ru')">Магазин</button>
-        <button onclick="showPage('https://jetset29.ru/cart')">Корзина</button>
-    </div>
-    
-    <!-- Здесь будет отображаться сайт -->
-    <iframe id="webview" src="https://jetset29.ru"></iframe>
+    <iframe id="webview" src="about:blank"></iframe>
 
     <script>
-        const tg = Telegram.WebApp;
-        tg.expand(); // Растягиваем на весь экран
+        const tg = window.Telegram.WebApp;
+        tg.expand();
         
-        // Показываем страницу в iframe
-        function showPage(url) {
-            document.getElementById('webview').src = url;
-        }
+        // 1. Пробуем открыть сайт напрямую
+        const iframe = document.getElementById('webview');
+        iframe.src = "https://jetset29.ru";
         
-        // Пытаемся обойти блокировку iframe
-        document.getElementById('webview').onload = function() {
-            try {
-                // Если сайт блокирует загрузку, используем прокси
-                if (this.contentWindow.length === 0) {
-                    this.src = `https://api.allorigins.win/raw?url=${encodeURIComponent(this.src)}`;
-                }
-            } catch (e) {
-                console.error("Ошибка загрузки:", e);
-                tg.showAlert("Не удалось загрузить страницу. Попробуйте позже.");
-            }
+        // 2. Если не грузится - пробуем через прокси
+        iframe.onerror = () => {
+            iframe.src = `https://corsproxy.io/?${encodeURIComponent("https://jetset29.ru")}`;
         };
+        
+        // 3. Если прокси тоже блокируется - показываем ошибку
+        setTimeout(() => {
+            if (!iframe.contentWindow || iframe.contentWindow.document.body.innerHTML === "") {
+                tg.showAlert("Не удалось загрузить сайт. Попробуйте позже.");
+                iframe.style.display = "none";
+            }
+        }, 3000);
     </script>
 </body>
 </html>
