@@ -6,7 +6,9 @@ header('Content-Type: text/html; charset=utf-8');
 $url = 'https://jetset29.ru';
 
 // Получаем HTML сайта
-$html = file_get_contents($url);
+$html = file_get_contents($url, false, stream_context_create([
+    'http' => ['header' => 'User-Agent: Mozilla/5.0']
+]));
 
 // Удаляем заголовки, которые блокируют iframe
 $html = preg_replace('/<meta[^>]+http-equiv=["\']X-Frame-Options["\'][^>]+>/i', '', $html);
