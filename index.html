@@ -13,31 +13,40 @@
             height: 100vh;
             border: none;
         }
+        .loader {
+            text-align: center;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
     </style>
 </head>
 <body>
-    <iframe id="webview" src="about:blank"></iframe>
+    <!-- Показываем загрузчик -->
+    <div id="loader" class="loader">
+        <h3>Загрузка Jetset29...</h3>
+    </div>
+
+    <!-- Сюда вставим сайт -->
+    <iframe id="webview" style="display: none;"></iframe>
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.expand();
-        
-        // 1. Пробуем открыть сайт напрямую
+        tg.expand(); // Растягиваем на весь экран
+
+        // Загружаем сайт через прокси
         const iframe = document.getElementById('webview');
-        iframe.src = "https://jetset29.ru";
-        
-        // 2. Если не грузится - пробуем через прокси
-        iframe.onerror = () => {
-            iframe.src = `https://corsproxy.io/?${encodeURIComponent("https://jetset29.ru")}`;
+        iframe.src = 'proxy.php'; // Путь к вашему proxy.php
+
+        // Когда сайт загрузится — скрываем загрузчик
+        iframe.onload = function() {
+            document.getElementById('loader').style.display = 'none';
+            iframe.style.display = 'block';
         };
-        
-        // 3. Если прокси тоже блокируется - показываем ошибку
-        setTimeout(() => {
-            if (!iframe.contentWindow || iframe.contentWindow.document.body.innerHTML === "") {
-                tg.showAlert("Не удалось загрузить сайт. Попробуйте позже.");
-                iframe.style.display = "none";
-            }
-        }, 3000);
+
+        // Если ошибка — показываем сообщение
+        iframe.onerror = function() {
+            tg.showAlert("Не удалось загрузить сайт. Попробуйте позже.");
+        };
     </script>
 </body>
 </html>
